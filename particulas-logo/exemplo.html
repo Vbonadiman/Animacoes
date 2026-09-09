@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Partículas → Logo · demonstração</title>
+<style>
+  :root{
+    --bg:#161415; --painel:rgba(255,255,255,.045); --borda:rgba(255,255,255,.11);
+    --borda-forte:rgba(255,255,255,.2); --texto:#ece7e4; --fraco:#9a9490;
+    --acento:#c8102e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;background:
+      radial-gradient(1100px 600px at 20% -10%, #221f20 0%, var(--bg) 60%) fixed;
+    color:var(--texto);font:14px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif;
+    padding:28px;
+  }
+  h1{font-size:20px;font-weight:600;margin:0 0 4px;letter-spacing:.3px}
+  .sub{color:var(--fraco);font-size:12px;margin:0 0 22px}
+  .grade{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));max-width:1200px}
+  .painel{
+    padding:18px;border-radius:12px;border:1px solid var(--borda);
+    background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  }
+  .painel h2{font-size:13px;font-weight:600;margin:0 0 12px;color:#cfc9c5;
+    text-transform:uppercase;letter-spacing:.5px}
+  label{display:block;font-size:11px;color:var(--fraco);margin:10px 0 4px}
+  input,select{
+    font:inherit;font-size:13px;color:var(--texto);width:100%;
+    padding:8px 10px;border-radius:8px;
+    background:rgba(255,255,255,.05);border:1px solid var(--borda);
+  }
+  input:focus,select:focus{outline:none;border-color:var(--acento)}
+  select option{background:#211e1f}
+  .linha{display:flex;gap:10px}
+  .linha>*{flex:1}
+  button{
+    font:inherit;font-size:13px;color:var(--texto);cursor:pointer;margin-top:14px;
+    padding:10px 16px;border-radius:8px;width:100%;
+    background:rgba(200,16,46,.18);border:1px solid rgba(200,16,46,.5);
+  }
+  button:hover{background:rgba(200,16,46,.3)}
+  button.sec{background:rgba(255,255,255,.05);border-color:var(--borda)}
+  button.sec:hover{background:rgba(255,255,255,.1)}
+  #palco{height:230px;border-radius:12px;border:1px solid var(--borda);
+    background:rgba(0,0,0,.28);overflow:hidden}
+  .nota{font-size:11px;color:var(--fraco);margin-top:12px;line-height:1.6}
+  .nota code{background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
+  .alerta{
+    padding:11px 14px;border-radius:9px;font-size:12px;line-height:1.6;
+    background:rgba(200,16,46,.13);border:1px solid rgba(200,16,46,.45);
+    margin-bottom:18px;max-width:1200px;
+  }
+  .alerta b{color:#ffd9d9}
+</style>
+</head>
+<body>
+
+<h1>Partículas → Logo</h1>
+<p class="sub">Demonstração de <code>particulas-logo.js</code>. Troque a logo e veja o efeito na hora.</p>
+
+<div id="avisoFile" class="alerta" hidden>
+  <b>Esta página foi aberta como <code>file://</code>.</b> O navegador proíbe ler os pixels
+  de uma imagem carregada assim, então a logo de exemplo não vai montar — vai cair no texto
+  de reserva. Duas saídas: use o botão <b>“Escolher arquivo”</b> abaixo (funciona sempre,
+  porque o arquivo entra como <code>data:</code>), ou sirva a pasta por HTTP:
+  <code>python3 -m http.server 8000</code> e abra <code>http://localhost:8000/exemplo.html</code>.
+</div>
+
+<div class="grade">
+
+  <div class="painel">
+    <h2>Logo</h2>
+    <label>Caminho da logo</label>
+    <input id="caminho" value="logos/exemplo.png">
+    <label>…ou escolha um arquivo do computador</label>
+    <input id="arquivo" type="file" accept="image/*">
+    <label>Texto de reserva (quando não há logo)</label>
+    <input id="texto" value="DEMO">
+    <div class="nota">
+      Molde ideal: PNG com fundo <b>transparente</b>, recortado <b>rente ao desenho</b>.
+      Margem sobrando desloca a montagem para fora do centro.
+    </div>
+  </div>
+
+  <div class="painel">
+    <h2>Ajustes</h2>
+    <label>Cor das partículas</label>
+    <select id="cores">
+      <option value="auto">auto — tira as cores do próprio arquivo</option>
+      <option value="#ece7e4">prata (cor única)</option>
+      <option value="#c8102e">vermelho (cor única)</option>
+      <option value="#4c8bf5">azul (cor única)</option>
+    </select>
+    <label>De onde as partículas vêm</label>
+    <select id="dispersao">
+      <option value="tela">tela inteira (padrão)</option>
+      <option value="centro">explodindo do centro</option>
+      <option value="baixo">subindo de baixo</option>
+      <option value="anel">de fora para dentro</option>
+    </select>
+    <div class="linha">
+      <div>
+        <label>Montagem (ms)</label>
+        <input id="montagem" type="number" value="1100" min="200" step="100">
+      </div>
+      <div>
+        <label>Densidade (passo px)</label>
+        <input id="passo" type="number" value="4" min="1" max="12">
+      </div>
+    </div>
+    <p class="nota" style="margin-top:12px">
+      Para som de entrada, passe <code>som: 'seu-arquivo.mp3'</code> — o
+      exemplo não traz arquivo de áudio.
+    </p>
+  </div>
+
+  <div class="painel">
+    <h2>Testar</h2>
+    <button id="btnCheia">Tela cheia (transição de login)</button>
+    <button id="btnPalco" class="sec">Montar aqui embaixo</button>
+    <button id="btnRefazer" class="sec">Repetir no palco</button>
+    <div class="nota">
+      A versão de tela cheia é a do login: monta, segura, some e devolve o controle.
+      A versão embutida fica na tela — serve para cabeçalho, capa ou tela de espera.
+    </div>
+  </div>
+
+</div>
+
+<div class="painel" style="margin-top:18px;max-width:1200px">
+  <h2>Palco</h2>
+  <div id="palco"></div>
+</div>
+
+<script src="particulas-logo.js"></script>
+<script>
+  var $ = function (s) { return document.querySelector(s); };
+  var logoEscolhida = null;   // data: URI quando o usuário escolhe um arquivo
+  var inline = null;
+
+  if (location.protocol === 'file:') $('#avisoFile').hidden = false;
+
+  $('#arquivo').addEventListener('change', function (ev) {
+    var f = ev.target.files && ev.target.files[0];
+    if (!f) return;
+    var leitor = new FileReader();
+    // data: URI não contamina o canvas — é o que faz esta demo funcionar
+    // mesmo aberta direto do disco.
+    leitor.onload = function () {
+      logoEscolhida = leitor.result;
+      $('#caminho').value = f.name + '  (carregado do computador)';
+    };
+    leitor.readAsDataURL(f);
+  });
+
+  $('#caminho').addEventListener('input', function () { logoEscolhida = null; });
+
+  function config() {
+    return {
+      logo: logoEscolhida || $('#caminho').value.trim(),
+      texto: $('#texto').value,
+      cores: $('#cores').value,
+      dispersao: $('#dispersao').value,
+      montagem: Number($('#montagem').value) || 1100,
+      passo: Number($('#passo').value) || 4
+    };
+  }
+
+  $('#btnCheia').addEventListener('click', function () {
+    ParticulasLogo.tocar(config()).then(function () {
+      console.log('animação terminou — aqui entraria o painel');
+    });
+  });
+
+  $('#btnPalco').addEventListener('click', function () {
+    if (inline) inline.destruir();
+    inline = ParticulasLogo.montarEm('#palco', Object.assign(config(), { largura: 0.8 }));
+  });
+
+  $('#btnRefazer').addEventListener('click', function () {
+    if (inline) inline.refazer();
+    else $('#btnPalco').click();
+  });
+</script>
+</body>
+</html>
